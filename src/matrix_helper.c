@@ -1,13 +1,10 @@
 // for helping to handle Matrix
 #include <stdio.h>
 #include <math.h>
+#include "matrix.h"
+#include "myDebug.h"
 
-typedef struct {
-  double *elm;
-  int row, col;
-} Matrix;
-
-Matrix *createMatrix( int row, int col)
+Matrix *matrixNew( int row, int col)
 {
   Matrix *m;
 
@@ -22,19 +19,19 @@ Matrix *createMatrix( int row, int col)
   return m;
 }
 
-bool deleteMatrix( Matrix *m)
+void matrixDelete( Matrix *m)
 {
-  delete m->elm;
-  delete m;
+  free( m->elm);
+  free( m);
 }
 
-Matrix *readMatrix( FILE *fp)
+Matrix *matrixReadFile( FILE *fp)
 {
   Matrix *m;
   int row, col;
   
   fscanf( fp, "%d%d", &row, &col);
-  if ( IS_FAILED( ( m = createMatrix( row, col)) != NULL)) {
+  if ( IS_FAILED( ( m = matrixNew( row, col)) != NULL)) {
     return NULL;
   }
 
@@ -45,7 +42,7 @@ Matrix *readMatrix( FILE *fp)
   return m;
 }
 
-void writeMatrix( Matrix *a)
+void matrixPrint( Matrix *a)
 {
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
@@ -55,7 +52,7 @@ void writeMatrix( Matrix *a)
   }
 }
 
-double calcDiff( Matrix *a, Matrix *b)
+double matrixCalcDiff( Matrix *a, Matrix *b)
 {
   double err = 0.0;
   
@@ -69,6 +66,6 @@ double calcDiff( Matrix *a, Matrix *b)
   return sqrt( err / (double)(a->col * a->row));
 }
 
-bool test_helper()
+bool matrixTest()
 {
 }
