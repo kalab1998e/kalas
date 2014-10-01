@@ -11,6 +11,7 @@ void matrixDelete( Matrix *m);
 Matrix *matrixReadFile( FILE *fp):
 void matrixPrint( Matrix *a);
 double matrixCalcDiff( Matrix *a, Matrix *b);
+void matrixMultiply( Matrix *a, Matrix *b, Matrix *c);
 bool matrixTest();
 
 #endif // MATRIX_H__

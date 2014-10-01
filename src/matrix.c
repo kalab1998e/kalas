@@ -66,6 +66,10 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
   return sqrt( err / (double)(a->col * a->row));
 }
 
+void matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
+{
+}
+
 bool matrixTest()
 {
 }
