@@ -44,6 +44,7 @@ Matrix *matrixReadFile( FILE *fp)
 
 void matrixPrint( Matrix *a)
 {
+  printf( "%d %d\n", a->row, a->col);
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
       printf( "%e ", a->elm[ i * a->col + j]);
@@ -68,8 +69,23 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
 
 void matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
 {
+  for ( int i = 0; i < a->row; i++) {
+    for ( int j = 0; j < b->col; j++) {
+      int idxC = c->col * i + j;
+      c->elm[idxC] = 0;
+      
+      for ( int k = 0; k < a->col; k++) {
+        int idxA, idxB;
+        idxA = a->col * i + k;
+        idxB = b->col * k + j;
+
+        c->elm[idxC] += a[idxA] * b[idxB];
+      }
+    }
+  }
 }
 
 bool matrixTest()
 {
+  
 }
