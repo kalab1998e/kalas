@@ -1,6 +1,8 @@
 #ifndef MATRIX_H__
 #define MATRIX_H__
 
+#include <stdio.h>
+
 typedef struct {
   double *elm;
   int row, col;
@@ -8,10 +10,10 @@ typedef struct {
 
 Matrix *matrixNew( int row, int col);
 void matrixDelete( Matrix *m);
-Matrix *matrixReadFile( FILE *fp):
+Matrix *matrixReadFile( FILE *fp);
 void matrixPrint( Matrix *a);
 double matrixCalcDiff( Matrix *a, Matrix *b);
 void matrixMultiply( Matrix *a, Matrix *b, Matrix *c);
-bool matrixTest();
+int matrixTest();
 
 #endif // MATRIX_H__

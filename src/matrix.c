@@ -1,5 +1,6 @@
 // for helping to handle Matrix
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "matrix.h"
 #include "myDebug.h"
@@ -79,13 +80,31 @@ void matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
         idxA = a->col * i + k;
         idxB = b->col * k + j;
 
-        c->elm[idxC] += a[idxA] * b[idxB];
+        c->elm[idxC] += a->elm[idxA] * b->elm[idxB];
       }
     }
   }
 }
 
-bool matrixTest()
+int matrixTest()
 {
-  
+  Matrix *a, *b, *c;
+
+  a = matrixNew( 3, 3);
+  b = matrixNew( 3, 3);
+  c = matrixNew( 3, 3);
+  for ( int i = 0; i < 9; i++) {
+    a->elm[i] = (double)i;
+    b->elm[i] = (double)(9-i);
+  }
+
+  matrixMultiply( a, b, c);
+  matrixPrint(a);
+  matrixPrint(b);
+  matrixPrint(c);
+}
+
+int main()
+{
+  matrixTest();
 }
