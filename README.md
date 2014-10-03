@@ -1,4 +1,4 @@
-kalas (KA - (basic) Linear Algebra Subroutines
+kalas KA - (basic) Linear Algebra Subroutines
 =====
 
 This goal is to build a BLAS for huge matrix using clBLAS
