@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "matrix.h"
 #include "myDebug.h"
 
@@ -102,6 +103,7 @@ int matrixTest()
   matrixPrint(a);
   matrixPrint(b);
   matrixPrint(c);
+  printf( "%f\n", matrixCalcDiff( c, c));
 }
 
 int main()
