@@ -8,7 +8,7 @@ typedef struct {
   int row, col;
 } Matrix;
 
-Matrix *matrixNew( int row, int col);
+Matrix *matrixNew( int row, int col, int flag);
 void matrixDelete( Matrix *m);
 Matrix *matrixReadFile( FILE *fp);
 void matrixPrint( Matrix *a);
