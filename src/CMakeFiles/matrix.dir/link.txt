@@ -1,0 +1,1 @@
+/usr/bin/cc  -std=c99 -O0 -ggdb -std=c99 -O0 -ggdb    CMakeFiles/matrix.dir/matrix.c.o  -o matrix  -L/opt/acml6.0.6/gfortran64_mp/lib -rdynamic -lm -lclBLAS -lacml_mp -Wl,-rpath,/opt/acml6.0.6/gfortran64_mp/lib 
