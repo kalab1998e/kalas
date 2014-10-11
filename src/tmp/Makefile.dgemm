@@ -2,8 +2,8 @@ CC = gcc
 FC = gfortran
 RM = rm
 CFLAGS = -O2 -std=c99 
-INCLUDE = -I/opt/acml5.3.1/gfortran64_mp/include -I/opt/AMDAPP/include -I/opt/clBLAS/include
-LIBS = -L/opt/acml5.3.1/gfortran64_mp/lib -L/opt/AMDAPP/lib/x86_64/ -L/opt/clBLAS/lib/ -lm -lacml_mp -lOpenCL -lclBLAS 
+INCLUDE = -I/opt/acml6.0.6/gfortran64_mp/include -I/opt/AMDAPPSDK-2.9-1/include -I/opt/clBLAS/include
+LIBS = -L/opt/acml6.0.6/gfortran64_mp/lib -L/opt/AMDAPPSDK-2.9-1/lib/x86_64/ -L/opt/clBLAS/lib64/ -lm -lacml_mp -lOpenCL -lclBLAS 
 TARGET = benchmark-dgemm
 OBJS = benchmark-dgemm.o
 

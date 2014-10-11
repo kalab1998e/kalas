@@ -4,5 +4,5 @@
 CMakeFiles/matrix.dir/matrix.c.o: matrix.c
 CMakeFiles/matrix.dir/matrix.c.o: matrix.h
 CMakeFiles/matrix.dir/matrix.c.o: myDebug.h
-CMakeFiles/matrix.dir/matrix.c.o: /opt/acml6.0.6/gfortran64/include/acml.h
+CMakeFiles/matrix.dir/matrix.c.o: /opt/acml6.0.6/gfortran64_mp/include/acml.h
 
