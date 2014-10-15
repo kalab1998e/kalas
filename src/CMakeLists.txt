@@ -9,8 +9,8 @@ set(CMAKE_C_FLAGS_RELEASE "-std=c99 -O0 -ggdb")
 
 set(ACMLROOT "/opt/acml6.0.6/gfortran64")
 
-include_directories( "/opt/clBLAS/include" "${ACMLROOT}/include")
-link_directories( "/opt/clBLAS/lib64" "${ACMLROOT}/lib")
+include_directories( "${ACMLROOT}/include")
+link_directories( "${ACMLROOT}/lib")
 
 add_executable(matrix matrix.c)
-target_link_libraries(matrix m clBLAS acml)
+target_link_libraries(matrix m acml)

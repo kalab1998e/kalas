@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 typedef struct {
-  double *elm;
+  float *elm;
   int row, col;
 } Matrix;
 
@@ -12,7 +12,7 @@ Matrix *matrixNew( int row, int col, int flag);
 void matrixDelete( Matrix *m);
 Matrix *matrixReadFile( FILE *fp);
 void matrixPrint( Matrix *a);
-double matrixCalcDiff( Matrix *a, Matrix *b);
+float matrixCalcDiff( Matrix *a, Matrix *b);
 void matrixMultiply( Matrix *a, Matrix *b, Matrix *c);
 int matrixTest();
 

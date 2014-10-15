@@ -14,21 +14,6 @@
 # EXTERNAL cache entries
 ########################
 
-//Path to a library.
-BLAS_acml_LIBRARY:FILEPATH=BLAS_acml_LIBRARY-NOTFOUND
-
-//Path to a library.
-BLAS_acml_mp_LIBRARY:FILEPATH=/opt/acml5.3.1/gfortran64_mp/lib/libacml_mp.so
-
-//Path to a library.
-BLAS_acml_mv_LIBRARY:FILEPATH=BLAS_acml_mv_LIBRARY-NOTFOUND
-
-//No help, variable specified on the command line.
-BLA_VENDER:UNINITIALIZED=ACML_MP
-
-//No help, variable specified on the command line.
-BLA_VENDOR:UNINITIALIZED=ACML
-
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
 
@@ -196,12 +181,6 @@ kalas_SOURCE_DIR:STATIC=/home/kiyotaka/Projects/kalas/src
 # INTERNAL cache entries
 ########################
 
-//ADVANCED property for variable: BLAS_acml_LIBRARY
-BLAS_acml_LIBRARY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BLAS_acml_mp_LIBRARY
-BLAS_acml_mp_LIBRARY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BLAS_acml_mv_LIBRARY
-BLAS_acml_mv_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_BUILD_TOOL
