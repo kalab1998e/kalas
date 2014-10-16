@@ -6,16 +6,16 @@
 #include <time.h>
 #include <acml.h>
 #include "matrix.h"
-#include "myDebug.h"
+#include "kadbg.h"
 
-Matrix *matrixNew( int row, int col, int flag)
+MatrixSingle *matrixNew( int row, int col, typeKind type, int flag)
 {
-  Matrix *m;
-
+  MatrixSingle *m;
+  
   if ( IS_FAILED( ( m = malloc( sizeof( Matrix))) != NULL)) {
     return NULL;
   }
-  if ( IS_FAILED( ( m->elm = calloc( sizeof( float), row * col)) != NULL)) {
+  if ( IS_FAILED( ( m->elm = calloc( type, row * col)) != NULL)) {
     return NULL;
   }
   m->row = row;
@@ -25,7 +25,14 @@ Matrix *matrixNew( int row, int col, int flag)
     for ( int i = 0; i < row; i++) {
       for ( int j = 0; j < col; j++) {
         int idx = i * col + j;
-        m->elm[ idx] = (float)rand() / RAND_MAX;
+        switch ( type) {
+        case FLOAT:
+          ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX;
+          break;
+        case DOUBLE:
+          ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX;
+          break;
+        }
       }
     }
   }
@@ -38,20 +45,31 @@ void matrixDelete( Matrix *m)
   free( m);
 }
 
-Matrix *matrixReadFile( FILE *fp)
+Matrix *matrixReadFile( FILE *fp, typeKind type)
 {
   Matrix *m;
   int row, col;
+  float *f;
+  double *d;
   
   fscanf( fp, "%d%d", &row, &col);
-  if ( IS_FAILED( ( m = matrixNew( row, col, 0)) != NULL)) {
+  if ( IS_FAILED( ( m = matrixNew( row, col, type, 0)) != NULL)) {
     return NULL;
   }
-
-  for ( int i = 0; i < row * col; i++) fscanf( fp, "%f", &(m->elm[i]));
+  
+  for ( int i = 0; i < row * col; i++) {
+    switch ( type) {
+    case FLOAT:
+      fscanf( fp, "%f", &(((float*)(m->elm))[i]));
+      break;
+    case DOUBLE:
+      fscanf( fp, "%lf", &(((double*)(m->elm))[i]));
+      break;
+    }
+  }
   m->row = row;
   m->col = col;
-  
+  m->type = type;
   return m;
 }
 
@@ -60,24 +78,41 @@ void matrixPrint( Matrix *a)
   printf( "%d %d\n", a->row, a->col);
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
-      printf( "%e ", a->elm[ i * a->col + j]);
+      switch ( a->type) {
+      case FLOAT:
+        printf( "%e ", ((float*)(a->elm))[ i * a->col + j]);
+        break;
+      case DOUBLE:
+        printf( "%e ", ((double*)(a->elm))[ i * a->col + j]);
+        break;
+      }
     }
     printf( "\n");
   }
 }
 
-float matrixCalcDiff( Matrix *a, Matrix *b)
+double matrixCalcDiff( Matrix *a, Matrix *b)
 {
-  float err = 0.0;
+  double err = 0.0;
+
+  if ( a->type != b->type) return (double)INFINITY;
   
-  if ( a->col == 0 || b->col == 0 || a->col != b->col) return FP_NAN;
-  if ( a->row == 0 || b->row == 0 || a->row != b->row) return FP_NAN;
+  if ( a->col == 0 || b->col == 0 || a->col != b->col) return (double)INFINITY;
+  if ( a->row == 0 || b->row == 0 || a->row != b->row) return (double)INFINITY;
   
   for ( int i = 0; i < a->row * a->col; i++) {
-    err += ( a->elm[i] - b->elm[i]) * ( a->elm[i] - b->elm[i]);
+    switch ( a->type) {
+    case FLOAT:
+      err += ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i])
+        * ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i]);
+      break;
+    case DOUBLE:
+      err += ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i])
+        * ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i]);
+      break;
   }
   
-  return sqrt( err / (float)(a->col * a->row));
+  return sqrt( err / (double)(a->col * a->row));
 }
 
 void matrixMultiply( Matrix *a, Matrix *b, Matrix *c)

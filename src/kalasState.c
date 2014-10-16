@@ -1,24 +1,24 @@
-#include "clState.h"
+#include "kalasState.h"
 #include "clerr.h"
 #include "debug.h"
 
-void clStateTest( void)
+void kalasStateTest( void)
 {
-  CLState *state;
+  KalasState *state;
 
-  TEST( !( state = clStateNew()));
-  clStateDelete( state);
+  TEST( !( state = kalasStateNew()));
+  kalasStateDelete( state);
 
   fprintf( stderr, "clState class test finished.\n");
 }
 
-CLState *clStateNew( void)
+KalasState *kalasStateNew( void)
 {
-  CLState *state;
+  KalasState *state;
   cl_context_properties props[3];
   cl_int err;
 
-  if ( TEST( ! (state = (CLState*)malloc( sizeof(CLState))))){
+  if ( TEST( ! (state = (KalasState*)malloc( sizeof(KalasState))))){
     return NULL;
   }
   state->device = NULL;
@@ -29,7 +29,7 @@ CLState *clStateNew( void)
   if ( TEST( ( err = clGetPlatformIDs(1, &(state->platform), NULL))
 	     != CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err );
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
 
@@ -38,20 +38,20 @@ CLState *clStateNew( void)
 				     NULL, &(state->deviceNum)))
 	     != CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
   if ( TEST( ! ( state->device =
 		 (cl_device_id*)malloc( sizeof( cl_device_id)
 					* state->deviceNum)))) {
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
   if ( TEST( ( err = clGetDeviceIDs( state->platform, CL_DEVICE_TYPE_GPU,
 				     state->deviceNum, state->device,
 				     &(state->deviceNum))) != CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
 
@@ -65,7 +65,7 @@ CLState *clStateNew( void)
 			       NULL, NULL, &err), err)
 	       != CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
 
@@ -73,7 +73,7 @@ CLState *clStateNew( void)
   if ( TEST( ( state->queue =
 	       (cl_command_queue*)malloc( sizeof(cl_command_queue)
 					  * state->deviceNum)) == NULL)) {
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
   for ( int i = 0; i < state->deviceNum; i++)
@@ -84,7 +84,7 @@ CLState *clStateNew( void)
 					 &err), err)
 		 != CL_SUCCESS)) {
       fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
-      clStateDelete( state);
+      kalasStateDelete( state);
       return NULL;
     }
   }
@@ -92,14 +92,14 @@ CLState *clStateNew( void)
   /* Setup clBLAS. */
   if ( TEST( ( err = clblasSetup()) != CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
-    clStateDelete( state);
+    kalasStateDelete( state);
     return NULL;
   }
 
   return state;
 }
 
-void clStateDelete( CLState *state)
+void kalasStateDelete( KalasState *state)
 {
   /* Release OpenCL working objects. */
   if ( state->queue != NULL)
