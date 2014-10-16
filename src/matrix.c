@@ -161,8 +161,9 @@ int matrixTest()
     matrixDelete(c);
   }
 }
-
+/*
 int main()
 {
   matrixTest();
 }
+*/

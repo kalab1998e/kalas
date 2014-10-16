@@ -18,7 +18,7 @@ int main(void)
   
   state = kalasStateNew();
 
-  kalasSgemm( 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0,
+  kalasSgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0,
               c->elm, cn);
   
   
