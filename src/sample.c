@@ -1,3 +1,4 @@
+#include <time.h>
 #include "matrix.h"
 #include "kalas.h"
 #include "kalasState.h"
@@ -6,15 +7,15 @@
 int main(void)
 {
   KalasState *state;
-  MatrixSingle *a, *b, *c;
+  Matrix *a, *b, *c;
   int am, an, bm, bn, cm, cn;
   clock_t cs, ce;
   double t;
   
   am = an = bm = bn = cm = cn = 1024;
-  a = matrixSingleNew( am, an, 1);
-  b = matrixSingleNew( bm, bn, 1);
-  c = matrixSingleNew( cm, cn, 0);
+  a = matrixNew( am, an, KALAS_FLOAT, 1);
+  b = matrixNew( bm, bn, KALAS_FLOAT, 1);
+  c = matrixNew( cm, cn, KALAS_FLOAT, 0);
   
   state = kalasStateNew();
 

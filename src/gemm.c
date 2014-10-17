@@ -25,7 +25,7 @@ clblasTranspose transChgF2C( char t) {
   return clblasNoTrans;
 }
 
-int kalasGemm( kalasState *state, typeKind type, char ta, char tb, int M, int N, int K, double alpha, void *A, int lda, void *B, int ldb, double beta, void *C, int ldc) {
+int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N, int K, double alpha, void *A, int lda, void *B, int ldb, double beta, void *C, int ldc) {
   clblastTranspose transA, transB;
   cl_int err = CL_SUCCESS;
   int noOfBuf = 3;
@@ -37,12 +37,12 @@ int kalasGemm( kalasState *state, typeKind type, char ta, char tb, int M, int N,
   buf[0] = buf[1] = buf[2] = NULL;
   
   /* Prepare OpenCL memory objects and place matrices inside them. */
-  CHKCLERR( buf[0] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
-                                    M * K * type, NULL, &err), err);
-  CHKCLERR( buf[1] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
-                                    K * N * type, NULL, &err), err);
-  CHKCLERR( buf[2] = clCreateBuffer(ctx, CL_MEM_READ_WRITE,
-                                    M * N * type, NULL, &err), err);
+  CHKCLERR( ( buf[0] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
+                                      M * K * type, NULL, &err), err));
+  CHKCLERR( ( buf[1] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
+                                      K * N * type, NULL, &err), err));
+  CHKCLERR( ( buf[2] = clCreateBuffer(ctx, CL_MEM_READ_WRITE,
+                                      M * N * type, NULL, &err), err));
 
   CHKCLERR( err = clEnqueueWriteBuffer(queue, buf[0], CL_TRUE, 0,
                                        M * K * type, A, 0, NULL, NULL));
@@ -84,14 +84,14 @@ int kalasGemm( kalasState *state, typeKind type, char ta, char tb, int M, int N,
   return err;
 }
 
-int kalasSgemm( kalasState *state, char ta, char tb, int M, int N, int K, float alpha, float *A, int lda, float *B, int ldb, float beta, float *C, int ldc)
+int kalasSgemm( KalasState *state, char ta, char tb, int M, int N, int K, float alpha, float *A, int lda, float *B, int ldb, float beta, float *C, int ldc)
 {
   return kalasGemm( state, KALAS_FLOAT, ta, tb, M, N, K,
                     (double)alpha, (void *)A, lda,
                     (void *)B, ldb, (double)beta, (void *)C, ldc);
 }
   
-int kalasDgemm( kalasState *state, char ta, char tb, int M, int N, int K, double alpha, double *A, int lda, double *B, int ldb, double beta, double *C, int ldc)
+int kalasDgemm( KalasState *state, char ta, char tb, int M, int N, int K, double alpha, double *A, int lda, double *B, int ldb, double beta, double *C, int ldc)
 {
   return kalasGemm( state, KALAS_DOUBLE, ta, tb, M, N, K,
                     alpha, (void *)A, lda,

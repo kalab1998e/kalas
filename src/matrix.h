@@ -3,8 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-
-typedef enum { FLOAT=sizeof(float), DOUBLE=sizeof(double)} typeKind;
+#include "kalas.h"
 
 typedef struct {
   void *elm;
