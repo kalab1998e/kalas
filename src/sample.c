@@ -21,7 +21,6 @@ int main(void)
   kalasSgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0,
               c->elm, cn);
   
-  
   kalasStateDelete( state);
 }
 
