@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <clBLAS.h>
 #include "kalasState.h"
 #include "kalas.h"
-
+#include "clerr.h"
 
 static const clblasOrder order = clblasRowMajor;
 
@@ -26,7 +27,7 @@ clblasTranspose transChgF2C( char t) {
 }
 
 int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N, int K, double alpha, void *A, int lda, void *B, int ldb, double beta, void *C, int ldc) {
-  clblastTranspose transA, transB;
+  clblasTranspose transA, transB;
   cl_int err = CL_SUCCESS;
   int noOfBuf = 3;
   cl_mem buf[ noOfBuf];
@@ -37,18 +38,18 @@ int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N,
   buf[0] = buf[1] = buf[2] = NULL;
   
   /* Prepare OpenCL memory objects and place matrices inside them. */
-  CHKCLERR( ( buf[0] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
+  CHKCLERR( ( buf[0] = clCreateBuffer(state->context, CL_MEM_READ_ONLY,
                                       M * K * type, NULL, &err), err));
-  CHKCLERR( ( buf[1] = clCreateBuffer(ctx, CL_MEM_READ_ONLY,
+  CHKCLERR( ( buf[1] = clCreateBuffer(state->context, CL_MEM_READ_ONLY,
                                       K * N * type, NULL, &err), err));
-  CHKCLERR( ( buf[2] = clCreateBuffer(ctx, CL_MEM_READ_WRITE,
+  CHKCLERR( ( buf[2] = clCreateBuffer(state->context, CL_MEM_READ_WRITE,
                                       M * N * type, NULL, &err), err));
 
-  CHKCLERR( err = clEnqueueWriteBuffer(queue, buf[0], CL_TRUE, 0,
+  CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[0], CL_TRUE, 0,
                                        M * K * type, A, 0, NULL, NULL));
-  CHKCLERR( err = clEnqueueWriteBuffer(queue, buf[1], CL_TRUE, 0,
+  CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[1], CL_TRUE, 0,
                                        K * N * type, B, 0, NULL, NULL));
-  CHKCLERR( err = clEnqueueWriteBuffer(queue, buf[2], CL_TRUE, 0,
+  CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[2], CL_TRUE, 0,
                                        M * N * type, C, 0, NULL, NULL));
 
   /* Call clblas extended function. Perform gemm for the lower right sub-matrices */
@@ -57,13 +58,13 @@ int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N,
     CHKCLERR( err = clblasSgemm(order, transA, transB, M, N, K,
                                 alpha, buf[0], 0, lda,
                                 buf[1], 0, ldb, beta, buf[2], 0, ldc,
-                                1, &queue, 0, NULL, &event));
+                                1, &(state->queue[0]), 0, NULL, &event));
     break;
   case KALAS_DOUBLE:
     CHKCLERR( err = clblasDgemm(order, transA, transB, M, N, K,
                                 alpha, buf[0], 0, lda, 
                                 buf[1], 0, ldb, beta, buf[2], 0, ldc,
-                                1, &queue, 0, NULL, &event));
+                                1, &(state->queue[0]), 0, NULL, &event));
     break;
   }
 
@@ -71,7 +72,7 @@ int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N,
   CHKCLERR( err = clWaitForEvents(1, &event));
     
   /* Fetch results of calculations from GPU memory. */
-  CHKCLERR( err = clEnqueueReadBuffer(queue, buf[2], CL_TRUE, 0,
+  CHKCLERR( err = clEnqueueReadBuffer(state->queue[0], buf[2], CL_TRUE, 0,
                                       M * N * type,
                                       C, 0, NULL, NULL));
 

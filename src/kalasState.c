@@ -1,12 +1,12 @@
 #include "kalasState.h"
 #include "clerr.h"
-#include "debug.h"
+#include "kadbg.h"
 
 void kalasStateTest( void)
 {
   KalasState *state;
 
-  TEST( !( state = kalasStateNew()));
+  IS_FAILED( ( state = kalasStateNew()) != NULL);
   kalasStateDelete( state);
 
   fprintf( stderr, "clState class test finished.\n");
@@ -18,7 +18,7 @@ KalasState *kalasStateNew( void)
   cl_context_properties props[3];
   cl_int err;
 
-  if ( TEST( ! (state = (KalasState*)malloc( sizeof(KalasState))))){
+  if ( IS_FAILED( (state = (KalasState*)malloc( sizeof(KalasState))) != NULL)) {
     return NULL;
   }
   state->device = NULL;
@@ -26,30 +26,31 @@ KalasState *kalasStateNew( void)
   state->queue = NULL;
   
   /* Setup OpenCL environment. */
-  if ( TEST( ( err = clGetPlatformIDs(1, &(state->platform), NULL))
-	     != CL_SUCCESS)) {
+  if ( IS_FAILED( ( err = clGetPlatformIDs(1, &(state->platform), NULL))
+                  == CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err );
     kalasStateDelete( state);
     return NULL;
   }
 
   // 全てのGPUデバイスを取得する
-  if ( TEST( ( err = clGetDeviceIDs( state->platform, CL_DEVICE_TYPE_GPU, 0,
-				     NULL, &(state->deviceNum)))
-	     != CL_SUCCESS)) {
+  if ( IS_FAILED( ( err = clGetDeviceIDs( state->platform, CL_DEVICE_TYPE_GPU,
+                                          0, NULL, &(state->deviceNum)))
+	     == CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
     kalasStateDelete( state);
     return NULL;
   }
-  if ( TEST( ! ( state->device =
-		 (cl_device_id*)malloc( sizeof( cl_device_id)
-					* state->deviceNum)))) {
+  if ( IS_FAILED( ( state->device =
+                    (cl_device_id*)malloc( sizeof( cl_device_id)
+                                           * state->deviceNum)) != NULL)) {
     kalasStateDelete( state);
     return NULL;
   }
-  if ( TEST( ( err = clGetDeviceIDs( state->platform, CL_DEVICE_TYPE_GPU,
-				     state->deviceNum, state->device,
-				     &(state->deviceNum))) != CL_SUCCESS)) {
+  if ( IS_FAILED( ( err = clGetDeviceIDs( state->platform, CL_DEVICE_TYPE_GPU,
+                                          state->deviceNum, state->device,
+                                          &(state->deviceNum)))
+                  == CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
     kalasStateDelete( state);
     return NULL;
@@ -60,29 +61,30 @@ KalasState *kalasStateNew( void)
   props[1] = (cl_context_properties)(state->platform);
   props[2] = 0;
 
-  if ( TEST( (state->context =
-	      clCreateContext( props, state->deviceNum, state->device,
-			       NULL, NULL, &err), err)
-	       != CL_SUCCESS)) {
+  if ( IS_FAILED( (state->context =
+                   clCreateContext( props, state->deviceNum, state->device,
+                                    NULL, NULL, &err), err)
+                  == CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
     kalasStateDelete( state);
     return NULL;
   }
 
   // デバイス分のキューの作成
-  if ( TEST( ( state->queue =
-	       (cl_command_queue*)malloc( sizeof(cl_command_queue)
-					  * state->deviceNum)) == NULL)) {
+  if ( IS_FAILED( ( state->queue =
+                    (cl_command_queue*)malloc( sizeof(cl_command_queue)
+                                               * state->deviceNum))
+                  != NULL)) {
     kalasStateDelete( state);
     return NULL;
   }
   for ( int i = 0; i < state->deviceNum; i++)
     state->queue[ i] = NULL;
   for ( int i = 0; i < state->deviceNum; i++) {
-    if ( TEST( ( state->queue[i] =
-		 clCreateCommandQueue( state->context, state->device[i], 0,
-					 &err), err)
-		 != CL_SUCCESS)) {
+    if ( IS_FAILED( ( state->queue[i] =
+                      clCreateCommandQueue( state->context, state->device[i],
+                                            0, &err), err)
+                    == CL_SUCCESS)) {
       fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
       kalasStateDelete( state);
       return NULL;
@@ -90,7 +92,7 @@ KalasState *kalasStateNew( void)
   }
 
   /* Setup clBLAS. */
-  if ( TEST( ( err = clblasSetup()) != CL_SUCCESS)) {
+  if ( IS_FAILED( ( err = clblasSetup()) == CL_SUCCESS)) {
     fprintf( stderr, "%s(%d)\n", clErrNo2Str( err), err);
     kalasStateDelete( state);
     return NULL;

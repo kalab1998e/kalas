@@ -8,9 +8,9 @@
 #include "matrix.h"
 #include "kadbg.h"
 
-MatrixSingle *matrixNew( int row, int col, typeKind type, int flag)
+Matrix *matrixNew( int row, int col, typeKind type, int flag)
 {
-  MatrixSingle *m;
+  Matrix *m;
   
   if ( IS_FAILED( ( m = malloc( sizeof( Matrix))) != NULL)) {
     return NULL;
@@ -26,10 +26,10 @@ MatrixSingle *matrixNew( int row, int col, typeKind type, int flag)
       for ( int j = 0; j < col; j++) {
         int idx = i * col + j;
         switch ( type) {
-        case FLOAT:
+        case KALAS_FLOAT:
           ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX;
           break;
-        case DOUBLE:
+        case KALAS_DOUBLE:
           ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX;
           break;
         }
@@ -59,10 +59,10 @@ Matrix *matrixReadFile( FILE *fp, typeKind type)
   
   for ( int i = 0; i < row * col; i++) {
     switch ( type) {
-    case FLOAT:
+    case KALAS_FLOAT:
       fscanf( fp, "%f", &(((float*)(m->elm))[i]));
       break;
-    case DOUBLE:
+    case KALAS_DOUBLE:
       fscanf( fp, "%lf", &(((double*)(m->elm))[i]));
       break;
     }
@@ -79,10 +79,10 @@ void matrixPrint( Matrix *a)
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
       switch ( a->type) {
-      case FLOAT:
+      case KALAS_FLOAT:
         printf( "%e ", ((float*)(a->elm))[ i * a->col + j]);
         break;
-      case DOUBLE:
+      case KALAS_DOUBLE:
         printf( "%e ", ((double*)(a->elm))[ i * a->col + j]);
         break;
       }
@@ -102,37 +102,56 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
   
   for ( int i = 0; i < a->row * a->col; i++) {
     switch ( a->type) {
-    case FLOAT:
+    case KALAS_FLOAT:
       err += ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i])
         * ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i]);
       break;
-    case DOUBLE:
+    case KALAS_DOUBLE:
       err += ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i])
         * ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i]);
       break;
+    }
   }
   
   return sqrt( err / (double)(a->col * a->row));
 }
 
-void matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
+bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
 {
+  typeKind type = a->type;
+  
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < b->col; j++) {
       int idxC = c->col * i + j;
-      c->elm[idxC] = 0;
+      switch ( type) {
+      case KALAS_FLOAT:
+        ((float*)c->elm)[idxC] = 0.0;
+        break;
+      case KALAS_DOUBLE:
+        ((double*)c->elm)[idxC] = 0.0;
+        break;
+      }
       
       for ( int k = 0; k < a->col; k++) {
         int idxA, idxB;
         idxA = a->col * i + k;
         idxB = b->col * k + j;
 
-        c->elm[idxC] += a->elm[idxA] * b->elm[idxB];
+        switch (type) {
+        case KALAS_FLOAT:
+          ((float*)c->elm)[idxC] += ((float*)a->elm)[idxA]
+            * ((float*)b->elm)[idxB];
+          break;
+        case KALAS_DOUBLE:
+          ((double*)c->elm)[idxC] += ((double*)a->elm)[idxA]
+            * ((double*)b->elm)[idxB];
+          break;
+        }
       }
     }
   }
 }
-
+/*
 int matrixTest()
 {
   Matrix *a, *b, *c;
@@ -145,12 +164,12 @@ int matrixTest()
     bm = an; bn = i;
     cm = am; cn = bn;
   
-    a = matrixNew( am, an, 1);
-    b = matrixNew( bm, bn, 1);
-    c = matrixNew( cm, cn, 0);
+    a = matrixNew( am, an, KALAS_FLOAT, 1);
+    b = matrixNew( bm, bn, KALAS_FLOAT, 1);
+    c = matrixNew( cm, cn, KALAS_FLOAT, 0);
 
     cs = clock();
-    sgemm( 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0, c->elm, cn);
+    sgemm( 'N', 'N', cm, cn, an, 1.0, (float*)(a->elm), an, (float*)(b->elm), bn, 0.0, (float*)(c->elm), cn);
     ce = clock();
     t = (ce - cs) / (float)CLOCKS_PER_SEC;
     
@@ -161,6 +180,7 @@ int matrixTest()
     matrixDelete(c);
   }
 }
+*/
 /*
 int main()
 {
