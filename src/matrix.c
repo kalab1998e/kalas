@@ -4,7 +4,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include <time.h>
-#include <acml.h>
 #include "matrix.h"
 #include "kadbg.h"
 
