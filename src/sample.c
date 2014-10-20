@@ -14,9 +14,9 @@ int main(void)
   char ta = 'N', tb = 'N';
   struct timeval t;
   double ts, te;
-  
+
   state = kalasStateNew();
-  
+ 
   for ( int i = 128; i <= 4096; i+=4) {
     am = an = bm = bn = cm = cn = i;
     a = matrixNew( am, an, KALAS_FLOAT, 1);
