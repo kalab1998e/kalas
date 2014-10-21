@@ -9,7 +9,7 @@ int main(void)
 {
   KalasState *state;
   Matrix *a, *b, *c1, *c2;
-  typeKind type = KALAS_FLOAT;
+  typeKind type = KALAS_DOUBLE;
   int am, an, bm, bn, cm, cn;
   float falpha = 1.0, fbeta = 0.0;
   double dalpha = 1.0, dbeta = 0.0, e;
@@ -66,6 +66,11 @@ int main(void)
 
     e = matrixCalcDiff( c1, c2);
     printf( "%e\n", e);
+
+    matrixDelete( a);
+    matrixDelete( b);
+    matrixDelete( c1);
+    matrixDelete( c2);
   }
   kalasStateDelete( state);
 }
