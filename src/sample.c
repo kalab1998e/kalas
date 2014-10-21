@@ -19,7 +19,7 @@ int main(void)
 
   state = kalasStateNew();
  
-  for ( int i = 128; i <= 4096; i+=4) {
+  for ( int i = 128; i <= 10000; i+=4) {
     am = an = bm = bn = cm = cn = i;
     a = matrixNew( am, an, type, 1);
     b = matrixNew( bm, bn, type, 1);
