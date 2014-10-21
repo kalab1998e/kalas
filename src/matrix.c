@@ -14,22 +14,23 @@ Matrix *matrixNew( int row, int col, typeKind type, int flag)
   if ( IS_FAILED( ( m = malloc( sizeof( Matrix))) != NULL)) {
     return NULL;
   }
-  if ( IS_FAILED( ( m->elm = calloc( type, row * col)) != NULL)) {
+  if ( IS_FAILED( ( m->elm = malloc( type * row * col)) != NULL)) {
     return NULL;
   }
   m->row = row;
   m->col = col;
-
+  m->type = type;
+  
   if ( flag) {
     for ( int i = 0; i < row; i++) {
       for ( int j = 0; j < col; j++) {
         int idx = i * col + j;
         switch ( type) {
         case KALAS_FLOAT:
-          ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX;
+          ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX * flag;
           break;
         case KALAS_DOUBLE:
-          ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX;
+          ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX * flag;
           break;
         }
       }
@@ -74,7 +75,7 @@ Matrix *matrixReadFile( FILE *fp, typeKind type)
 
 void matrixPrint( Matrix *a)
 {
-  printf( "%d %d\n", a->row, a->col);
+  printf( "%d %d type:%d\n", a->row, a->col, a->type);
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
       switch ( a->type) {

@@ -5,7 +5,7 @@
 #include "kalas.h"
 #include "clerr.h"
 
-static const clblasOrder order = clblasRowMajor;
+static const clblasOrder order = clblasColumnMajor;
 
 void releaseObjects( cl_mem *buf, int noOfBuf)
 {
