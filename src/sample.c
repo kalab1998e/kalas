@@ -9,7 +9,7 @@ int main(void)
 {
   KalasState *state;
   Matrix *a, *b, *c1, *c2;
-  typeKind type = KALAS_DOUBLE;
+  typeKind type = KALAS_FLOAT;
   int am, an, bm, bn, cm, cn;
   float falpha = 1.0, fbeta = 0.0;
   double dalpha = 1.0, dbeta = 0.0, e;
