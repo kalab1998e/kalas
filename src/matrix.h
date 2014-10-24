@@ -7,11 +7,11 @@
 
 typedef struct {
   void *elm;
-  int row, col;
+  int row, col, ld;
   typeKind type;
 } Matrix;
 
-Matrix *matrixNew( int row, int col, typeKind type, int flag);
+Matrix *matrixNew( int row, int col, int ld, typeKind type, int flag);
 void matrixDelete( Matrix *m);
 Matrix *matrixReadFile( FILE *fp, typeKind type);
 void matrixPrint( Matrix *a);

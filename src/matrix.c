@@ -7,30 +7,32 @@
 #include "matrix.h"
 #include "kadbg.h"
 
-Matrix *matrixNew( int row, int col, typeKind type, int flag)
+Matrix *matrixNew( int row, int col, int ld, typeKind type, int flag)
 {
   Matrix *m;
-  
+
+  if ( col > ld) ld = col;
   if ( IS_FAILED( ( m = malloc( sizeof( Matrix))) != NULL)) {
     return NULL;
   }
-  if ( IS_FAILED( ( m->elm = malloc( type * row * col)) != NULL)) {
+  if ( IS_FAILED( ( m->elm = calloc( type, row * ld)) != NULL)) {
     return NULL;
   }
   m->row = row;
   m->col = col;
+  m->ld = ld;
   m->type = type;
   
   if ( flag) {
     for ( int i = 0; i < row; i++) {
       for ( int j = 0; j < col; j++) {
-        int idx = i * col + j;
+        int idx = i * ld + j;
         switch ( type) {
         case KALAS_FLOAT:
-          ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX * flag;
+          ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX;
           break;
         case KALAS_DOUBLE:
-          ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX * flag;
+          ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX;
           break;
         }
       }
@@ -53,7 +55,7 @@ Matrix *matrixReadFile( FILE *fp, typeKind type)
   double *d;
   
   fscanf( fp, "%d%d", &row, &col);
-  if ( IS_FAILED( ( m = matrixNew( row, col, type, 0)) != NULL)) {
+  if ( IS_FAILED( ( m = matrixNew( row, col, col, type, 0)) != NULL)) {
     return NULL;
   }
   
@@ -67,9 +69,6 @@ Matrix *matrixReadFile( FILE *fp, typeKind type)
       break;
     }
   }
-  m->row = row;
-  m->col = col;
-  m->type = type;
   return m;
 }
 
@@ -78,12 +77,14 @@ void matrixPrint( Matrix *a)
   printf( "%d %d type:%d\n", a->row, a->col, a->type);
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < a->col; j++) {
+      int idx = i * a->ld + j;
+      
       switch ( a->type) {
       case KALAS_FLOAT:
-        printf( "%e ", ((float*)(a->elm))[ i * a->col + j]);
+        printf( "%e ", ((float*)(a->elm))[ idx]);
         break;
       case KALAS_DOUBLE:
-        printf( "%e ", ((double*)(a->elm))[ i * a->col + j]);
+        printf( "%e ", ((double*)(a->elm))[ idx]);
         break;
       }
     }
@@ -100,7 +101,7 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
   if ( a->col == 0 || b->col == 0 || a->col != b->col) return (double)INFINITY;
   if ( a->row == 0 || b->row == 0 || a->row != b->row) return (double)INFINITY;
   
-  for ( int i = 0; i < a->row * a->col; i++) {
+  for ( int i = 0; i < a->row * a->ld; i++) {
     switch ( a->type) {
     case KALAS_FLOAT:
       err += ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i])
@@ -122,7 +123,7 @@ bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
   
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < b->col; j++) {
-      int idxC = c->col * i + j;
+      int idxC = c->ld * i + j;
       switch ( type) {
       case KALAS_FLOAT:
         ((float*)c->elm)[idxC] = 0.0;
@@ -134,8 +135,8 @@ bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
       
       for ( int k = 0; k < a->col; k++) {
         int idxA, idxB;
-        idxA = a->col * i + k;
-        idxB = b->col * k + j;
+        idxA = a->ld * i + k;
+        idxB = b->ld * k + j;
 
         switch (type) {
         case KALAS_FLOAT:

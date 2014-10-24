@@ -29,8 +29,8 @@ clblasTranspose transChgF2C( char t) {
 int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N, int K, double alpha, void *A, int lda, void *B, int ldb, double beta, void *C, int ldc) {
   clblasTranspose transA, transB;
   cl_int err = CL_SUCCESS;
-  int noOfBuf = 3;
-  cl_mem buf[ noOfBuf];
+  int noOfBuf;
+  cl_mem *buf = NULL;
   cl_event event = NULL;
   
   transA = transChgF2C( ta);
