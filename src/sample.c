@@ -3,7 +3,6 @@
 #include "matrix.h"
 #include "kalas.h"
 #include "kalasState.h"
-#include "kadbg.h"
 
 int main(void)
 {
@@ -21,23 +20,23 @@ int main(void)
  
   for ( int i = 4; i <= 4096; i += 4) {
     am = an = bm = bn = cm = cn = i;
-    a = matrixNew( am, an, type, 1);
-    b = matrixNew( bm, bn, type, 1);
-    c1 = matrixNew( cm, cn, type, 0);
-    c2 = matrixNew( cm, cn, type, 0);
+    a = matrixNew( am, an, an, type, 1);
+    b = matrixNew( bm, bn, bn, type, 1);
+    c1 = matrixNew( cm, cn, cn, type, 0);
+    c2 = matrixNew( cm, cn, cn, type, 0);
     
     gettimeofday( &t, NULL);
     ts = t.tv_sec + (double)(t.tv_usec) / 1000000.0;
     switch (type) {
     case KALAS_FLOAT:
-      sgemm_( &ta, &tb, &cm, &cn, &an, &falpha, a->elm, &an,
-              b->elm, &bn, &fbeta,
-              c1->elm, &cn);
+      sgemm_( &ta, &tb, &cm, &cn, &an, &falpha, a->elm, &(a->ld),
+              b->elm, &(b->ld), &fbeta,
+              c1->elm, &(c1->ld));
       break;
     case KALAS_DOUBLE:
-      dgemm_( &ta, &tb, &cm, &cn, &an, &dalpha, a->elm, &an,
-              b->elm, &bn, &dbeta,
-              c1->elm, &cn);
+      dgemm_( &ta, &tb, &cm, &cn, &an, &dalpha, a->elm, &(a->ld),
+              b->elm, &(b->ld), &dbeta,
+              c1->elm, &(c1->ld));
       break;
     }
     gettimeofday( &t, NULL);
@@ -50,12 +49,14 @@ int main(void)
     ts = t.tv_sec + (double)(t.tv_usec) / 1000000.0;
     switch (type) {
     case KALAS_FLOAT:
-      kalasSgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0,
-                  c2->elm, cn);
+      kalasSgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, a->ld,
+                  b->elm, b->ld, 0.0,
+                  c2->elm, c2->ld);
       break;
     case KALAS_DOUBLE:
-      kalasDgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, an, b->elm, bn, 0.0,
-                  c2->elm, cn);
+      kalasDgemm( state, 'N', 'N', cm, cn, an, 1.0, a->elm, a->ld,
+                  b->elm, b->ld, 0.0,
+                  c2->elm, c2->ld);
       break;
     }
     gettimeofday( &t, NULL);

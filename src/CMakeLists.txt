@@ -10,5 +10,5 @@ set(OPENBLASROOT "/opt/OpenBLAS")
 
 include_directories( "${AMDAPPSDKROOT}/include" "${CLBLASROOT}/include" "${OPENBLASROOT}/include")
 link_directories( "${AMDAPPSDKROOT}/lib/x86_64" "${CLBLASROOT}/lib64" "${OPENBLASROOT}/lib")
-add_executable(sample sample.c kalasState.c clerr.c gemm.c kadbg.c matrix.c)
+add_executable(sample sample.c kalasState.c clerr.c gemm.c matrix.c kadbg.c)
 target_link_libraries(sample m clBLAS OpenCL openblas)

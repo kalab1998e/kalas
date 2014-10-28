@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "kalasState.h"
 #include "clerr.h"
 #include "kadbg.h"

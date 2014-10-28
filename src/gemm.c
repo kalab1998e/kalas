@@ -29,28 +29,28 @@ clblasTranspose transChgF2C( char t) {
 int kalasGemm( KalasState *state, typeKind type, char ta, char tb, int M, int N, int K, double alpha, void *A, int lda, void *B, int ldb, double beta, void *C, int ldc) {
   clblasTranspose transA, transB;
   cl_int err = CL_SUCCESS;
-  int noOfBuf;
-  cl_mem *buf = NULL;
+  int noOfBuf = 3;
+  cl_mem buf[ noOfBuf];
   cl_event event = NULL;
-  
+
   transA = transChgF2C( ta);
   transB = transChgF2C( tb);
   buf[0] = buf[1] = buf[2] = NULL;
   
   /* Prepare OpenCL memory objects and place matrices inside them. */
   CHKCLERR( ( buf[0] = clCreateBuffer(state->context, CL_MEM_READ_ONLY,
-                                      M * K * type, NULL, &err), err));
+                                      M * lda * type, NULL, &err), err));
   CHKCLERR( ( buf[1] = clCreateBuffer(state->context, CL_MEM_READ_ONLY,
-                                      K * N * type, NULL, &err), err));
+                                      K * ldb * type, NULL, &err), err));
   CHKCLERR( ( buf[2] = clCreateBuffer(state->context, CL_MEM_READ_WRITE,
-                                      M * N * type, NULL, &err), err));
+                                      M * ldc * type, NULL, &err), err));
 
   CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[0], CL_TRUE, 0,
-                                       M * K * type, A, 0, NULL, NULL));
+                                       M * lda * type, A, 0, NULL, NULL));
   CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[1], CL_TRUE, 0,
-                                       K * N * type, B, 0, NULL, NULL));
+                                       K * ldb * type, B, 0, NULL, NULL));
   CHKCLERR( err = clEnqueueWriteBuffer(state->queue[0], buf[2], CL_TRUE, 0,
-                                       M * N * type, C, 0, NULL, NULL));
+                                       M * ldc * type, C, 0, NULL, NULL));
 
   /* Call clblas extended function. Perform gemm for the lower right sub-matrices */
   switch ( type) {
