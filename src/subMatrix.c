@@ -16,11 +16,11 @@ SubMatrix *subMatrixNew( Matrix *mat, int row_, int col_)
 
 	smat->subRow = row_;
 	smat->subCol = col_;
-	smat->noRow = mat->row / row_ + (mat->row % row_ == 0) ? 0 : 1;
-	smat->noCol = mat->col / col_ + (mat->col % col_ == 0) ? 0 : 1;
+	smat->numRow = mat->row / row_ + (mat->row % row_ == 0) ? 0 : 1;
+	smat->numCol = mat->col / col_ + (mat->col % col_ == 0) ? 0 : 1;
 
-	for ( int iblk = 0; iblk < smat->noRow; iblk++) {
-		for ( int jblk = 0; jblk < smat->noCol; jblk++) {
+	for ( int iblk = 0; iblk < smat->numRow; iblk++) {
+		for ( int jblk = 0; jblk < smat->numCol; jblk++) {
 			for ( int ielm = 0; ielm < smat->row; ielm++) {
 				for ( int jelm = 0; jelm < smat->col; jelm++) {
 				}
