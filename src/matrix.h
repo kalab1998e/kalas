@@ -17,6 +17,7 @@ Matrix *matrixReadFile( FILE *fp, typeKind type);
 void matrixPrint( Matrix *a);
 double matrixCalcDiff( Matrix *a, Matrix *b);
 bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c);
+Matrix *matrixGetSubMatrix( Matrix *a, int rs, int cs, int re, int ce);
 int matrixTest();
 
 #endif // MATRIX_H__

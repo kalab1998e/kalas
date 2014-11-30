@@ -152,6 +152,41 @@ bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
     }
   }
 }
+
+Matrix *matrixGetSubMatrix( Matrix *a, int rs, int cs, int re, int ce)
+{
+	Matrix *b;
+	int brow, bcol, brow_, bcol_, re_, ce_;
+
+	if ( ce >= a->col) ce_ = a->col - 1;
+	if ( re >= a->row) re_ = a->row - 1;
+
+	brow = re - rs + 1;
+	brow_ = re_ - rs + 1;
+	bcol = ce - cs + 1;
+	bcol_ = ce_ - cs + 1;
+	if ( IS_FAILED( ( b = matrixNew( brow, bcol, bcol, a->type, 0))
+									!= NULL)) return NULL;
+
+	for ( int i = 0; i < brow_; i++) {
+		for ( int j = 0; j < bcol_; j++) {
+			int idx, bidx;
+			idx = ( rs + i) * a->ld + cs + j;
+			bidx = i * bcol + j;
+			switch ( a->type) {
+			case KALAS_FLOAT:
+				((float*)( b->elm))[ bidx] = ((float*)(a->elm))[ idx];
+				break;
+			case KALAS_DOUBLE:
+				((double*)( b->elm))[ bidx] = ((double*)(a->elm))[ idx];
+				break;
+			}
+		}
+	}
+
+	return b;
+}
+
 /*
 int matrixTest()
 {
