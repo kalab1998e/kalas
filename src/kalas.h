@@ -10,8 +10,8 @@
 
 typedef enum { KALAS_FLOAT = 4, KALAS_DOUBLE = 8} typeKind;
 
-int kalasSgemm( KalasState *state, char ta, char tb, int M, int N, int K, float alpha, float *A, int lda, float *B, int ldb, float beta, float *C, int ldc);
+int kalasSgemm( KalasState *state, char *ta, char *tb, int *M, int *N, int *K, float *alpha, float *A, int *lda, float *B, int *ldb, float *beta, float *C, int *ldc);
 
-int kalasDgemm( KalasState *state, char ta, char tb, int M, int N, int K, double alpha, double *A, int lda, double *B, int ldb, double beta, double *C, int ldc);
+int kalasDgemm( KalasState *state, char *ta, char *tb, int *M, int *N, int *K, double *alpha, double *A, int *lda, double *B, int *ldb, double *beta, double *C, int *ldc);
 
 #endif // KALAS_H__

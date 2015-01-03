@@ -5,7 +5,7 @@
 
 typedef struct {
 	int row, col, noRow, noCol;
-	Matrix **block;
+	Matrix **matBlock;
 } SubMatrix;
 
 SubMatrix *subMatrixNew( Matrix*mat, int row, int col);
