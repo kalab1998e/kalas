@@ -3,17 +3,16 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "kalas.h"
 
 typedef struct {
   void *elm;
   int row, col, ld;
-  typeKind type;
+  int type;
 } Matrix;
 
-Matrix *matrixNew( int row, int col, int ld, typeKind type, int flag);
+Matrix *matrixNew( int row, int col, int ld, int type, bool flag);
 void matrixDelete( Matrix *m);
-Matrix *matrixReadFile( FILE *fp, typeKind type);
+Matrix *matrixReadFile( FILE *fp, int type);
 void matrixPrint( Matrix *a);
 double matrixCalcDiff( Matrix *a, Matrix *b);
 bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c);

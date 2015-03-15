@@ -8,10 +8,18 @@
              __FILE__, __LINE__, __func__, __STRING(expr));  \
     goto FUNCEXIT;}}
 
-typedef enum { KALAS_FLOAT = 4, KALAS_DOUBLE = 8} typeKind;
+int kalasSgemm(
+	KalasState *state, const clblasOrder order,
+	const clblasTranspose transA, const clblasTranspose transB,
+	const size_t M, const size_t N, const size_t K,
+	const float alpha, const float *A, const int lda,
+	const float *B, const int ldb, const float beta, float *C, const int ldc);
 
-int kalasSgemm( KalasState *state, char *ta, char *tb, int *M, int *N, int *K, float *alpha, float *A, int *lda, float *B, int *ldb, float *beta, float *C, int *ldc);
-
-int kalasDgemm( KalasState *state, char *ta, char *tb, int *M, int *N, int *K, double *alpha, double *A, int *lda, double *B, int *ldb, double *beta, double *C, int *ldc);
+int kalasDgemm(
+	KalasState *state, const clblasOrder order,
+	const clblasTranspose transA, const clblasTranspose transB,
+	const size_t M, const size_t N, const size_t K,
+	const double alpha, const double *A, const int lda,
+	const double *B, const int ldb, const double beta, double *C, const int ldc);
 
 #endif // KALAS_H__

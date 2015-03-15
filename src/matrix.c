@@ -7,7 +7,7 @@
 #include "matrix.h"
 #include "kadbg.h"
 
-Matrix *matrixNew( int row, int col, int ld, typeKind type, int flag)
+Matrix *matrixNew( int row, int col, int ld, int type, bool flag)
 {
   Matrix *m;
 
@@ -28,10 +28,10 @@ Matrix *matrixNew( int row, int col, int ld, typeKind type, int flag)
       for ( int j = 0; j < col; j++) {
         int idx = i * ld + j;
         switch ( type) {
-        case KALAS_FLOAT:
+        case sizeof(float):
           ((float*)(m->elm))[ idx] = (float)rand() / RAND_MAX;
           break;
-        case KALAS_DOUBLE:
+        case sizeof(double):
           ((double*)(m->elm))[ idx] = (double)rand() / RAND_MAX;
           break;
         }
@@ -47,7 +47,7 @@ void matrixDelete( Matrix *m)
   free( m);
 }
 
-Matrix *matrixReadFile( FILE *fp, typeKind type)
+Matrix *matrixReadFile( FILE *fp, int type)
 {
   Matrix *m;
   int row, col;
@@ -61,10 +61,10 @@ Matrix *matrixReadFile( FILE *fp, typeKind type)
   
   for ( int i = 0; i < row * col; i++) {
     switch ( type) {
-    case KALAS_FLOAT:
+    case sizeof(float):
       fscanf( fp, "%f", &(((float*)(m->elm))[i]));
       break;
-    case KALAS_DOUBLE:
+    case sizeof(double):
       fscanf( fp, "%lf", &(((double*)(m->elm))[i]));
       break;
     }
@@ -80,10 +80,10 @@ void matrixPrint( Matrix *a)
       int idx = i * a->ld + j;
       
       switch ( a->type) {
-      case KALAS_FLOAT:
+      case sizeof(float):
         printf( "%e ", ((float*)(a->elm))[ idx]);
         break;
-      case KALAS_DOUBLE:
+      case sizeof(double):
         printf( "%e ", ((double*)(a->elm))[ idx]);
         break;
       }
@@ -103,11 +103,11 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
   
   for ( int i = 0; i < a->row * a->ld; i++) {
     switch ( a->type) {
-    case KALAS_FLOAT:
+    case sizeof(float):
       err += ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i])
         * ( ((float*)(a->elm))[i] - ((float*)(b->elm))[i]);
       break;
-    case KALAS_DOUBLE:
+    case sizeof(double):
       err += ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i])
         * ( ((double*)(a->elm))[i] - ((double*)(b->elm))[i]);
       break;
@@ -119,16 +119,16 @@ double matrixCalcDiff( Matrix *a, Matrix *b)
 
 bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
 {
-  typeKind type = a->type;
+  int type = a->type;
   
   for ( int i = 0; i < a->row; i++) {
     for ( int j = 0; j < b->col; j++) {
       int idxC = c->ld * i + j;
       switch ( type) {
-      case KALAS_FLOAT:
+      case sizeof(float):
         ((float*)c->elm)[idxC] = 0.0;
         break;
-      case KALAS_DOUBLE:
+      case sizeof(double):
         ((double*)c->elm)[idxC] = 0.0;
         break;
       }
@@ -139,11 +139,11 @@ bool matrixMultiply( Matrix *a, Matrix *b, Matrix *c)
         idxB = b->ld * k + j;
 
         switch (type) {
-        case KALAS_FLOAT:
+        case sizeof(float):
           ((float*)c->elm)[idxC] += ((float*)a->elm)[idxA]
             * ((float*)b->elm)[idxB];
           break;
-        case KALAS_DOUBLE:
+        case sizeof(double):
           ((double*)c->elm)[idxC] += ((double*)a->elm)[idxA]
             * ((double*)b->elm)[idxB];
           break;
@@ -174,10 +174,10 @@ Matrix *matrixGetSubMatrix( Matrix *a, int rs, int cs, int re, int ce)
 			idx = ( rs + i) * a->ld + cs + j;
 			bidx = i * bcol + j;
 			switch ( a->type) {
-			case KALAS_FLOAT:
+			case sizeof(float):
 				((float*)( b->elm))[ bidx] = ((float*)(a->elm))[ idx];
 				break;
-			case KALAS_DOUBLE:
+			case sizeof(double):
 				((double*)( b->elm))[ bidx] = ((double*)(a->elm))[ idx];
 				break;
 			}

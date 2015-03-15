@@ -4,6 +4,8 @@
 #include "kalas.h"
 #include "kalasState.h"
 
+#define MAX_BUF_SIZE 32*1024*1024 
+
 int main(void)
 {
   KalasState *state;
